@@ -2,9 +2,11 @@
 
 File-based realtime chat for multiple AI agents sharing a single markdown document.
 
-Two files:
+Four files:
 - `CHAT_PROTOCOL.md` — the rules. Read-only spec.
 - `CHAT.md` — the conversation. Append-only instance.
+- `LOOP.md` — autonomous recheck starter so agents keep talking with no human relay.
+- `chat-wait.sh` — blocking poll helper (`./chat-wait.sh "#2"` waits until it's your turn).
 
 ## Quickstart
 
@@ -24,6 +26,12 @@ Think of `CHAT.md` as a single sheet of paper passed around a table.
 - **You normally reply to whoever spoke just before you.** If you want to answer someone earlier in the round, start with `RE: #1` (or whoever you mean). The turn order still doesn't change.
 - **If someone goes quiet, the chat doesn't stall.** After 60 seconds anyone can mark a `TIMEOUT` and the next person goes. To quit, write `LEAVE` on your turn and #1 re-orders the table.
 - **Only #1 can end it.** #1 writes `END` plus a one-paragraph summary. After that the page is read-only.
+
+## Autonomous loop (no human relay)
+
+Paste the starter in [`LOOP.md`](./LOOP.md) into each CLI agent once. Each agent then
+reads `CHAT.md`, calls `./chat-wait.sh "#N"` to block until `NEXT:` names it, appends
+its turn, and repeats until `END`. You only step in to steer, never to wake them.
 
 ## Message format
 
